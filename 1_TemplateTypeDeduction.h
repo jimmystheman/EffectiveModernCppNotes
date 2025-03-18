@@ -1,9 +1,6 @@
 #pragma once
-#include <iostream>
-#include <type_traits>
-#include <string>
+#include "common.h"
 
-using namespace std;
 // Item 1 is about how templates deduce types
 // template functions are functions where a placeholder is used instead of a specific type for function parameters/arguments
 // template<typename T>		// T is the arg type
@@ -18,31 +15,14 @@ namespace item_1 {
 		std::cout << std::endl;
 	}
 
-	template<typename Type>
-	string GetTypeInfo()
+	bool NumIsEven(const int& num)
 	{
-		// remove ref to check for const, and typeid ignores ref/const anyway
-		using BaseType = typename std::remove_reference<Type>::type;
-		string type_const_str = std::is_const<BaseType>::value ? "const " : "";
+		return num % 2 == 0;
+	}
 
-		string ref_or_ptr{ };
-		if (std::is_lvalue_reference<Type>::value)
-		{
-			ref_or_ptr = "&";
-		}
-		else if (std::is_rvalue_reference<Type>::value)
-		{
-			ref_or_ptr = "&&";
-		}
-		else if (std::is_pointer<Type>::value)
-		{
-			//ref_or_ptr = "*";
-			// my compiler adds an asterisk
-		}
-
-		string type_type = typeid(BaseType).name();
-		
-		return type_const_str + type_type + ref_or_ptr;
+	int AddOne(int& num)
+	{
+		return num + 1;
 	}
 
 	template<typename T>
@@ -89,9 +69,15 @@ namespace item_1 {
 	{
 		// T is whatever type passed in the expression, ignores const/ref
 		// param is a copy of the passed expression, a new object
-	
+
 		std::cout << "f_by_value: T is " << GetTypeInfo<T>() << ", param is " << GetTypeInfo<decltype(param)>() << std::endl;
 
+	}
+
+	template<typename T, std::size_t N>
+	constexpr std::size_t ArraySize(T(&)[N])
+	{
+		return N;
 	}
 
 	void Run()
@@ -153,7 +139,11 @@ namespace item_1 {
 
 		f_ptr(hello);
 		f_ptr(letters);
+
+		std::cout << "letters length: " << ArraySize(letters) << std::endl;
+
 		NewLine();
+
 
 		// functions
 		f_ref(NewLine);
@@ -162,6 +152,27 @@ namespace item_1 {
 		f_by_value(NewLine);
 
 		NewLine();
+
+		int num = 7;
+		std::cout << boolalpha;
+		std::cout << "Num = " << num << std::endl;
+		std::cout << num << " is even: " << NumIsEven(num) << std::endl;
+
+		
+		std::cout << " plus one =  " << AddOne(num) << std::endl;
+		NewLine();
+
+		std::cout << "NumIsEven" << std::endl;
+		f_ref(NumIsEven);
+		f_const_ref(NumIsEven);
+		f_universal_ref(NumIsEven);
+		f_by_value(NumIsEven);
+
+		std::cout << "AddOne" << std::endl;
+		f_ref(AddOne);
+		f_const_ref(AddOne);
+		f_universal_ref(AddOne);
+		f_by_value(AddOne);
 	}
 
 

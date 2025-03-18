@@ -23,5 +23,11 @@
     <ClInclude Include="1_TemplateTypeDeduction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="2_AutoTypeDeduction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
